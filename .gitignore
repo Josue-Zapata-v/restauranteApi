@@ -1,0 +1,22 @@
+# Build artifacts
+**/bin/
+**/obj/
+.vs/
+.idea/
+*.user
+*.suo
+TestResults/
+
+# Local configuration & secrets (no connection strings in repository)
+**/appsettings.Development.json
+**/appsettings.Local.json
+**/secrets.json
+.env
+.env.*
+!.env.example
+*.local
+.local/
+
+# Local evidence & Word deliverables
+evidencias/
+*.docx
