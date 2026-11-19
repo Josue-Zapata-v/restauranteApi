@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Restaurante.Entidades.DTOs;
 using Restaurante.Negocio.Exceptions;
@@ -7,6 +8,7 @@ namespace Restaurante.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Authorize]
 public class MesasController : ControllerBase
 {
     private readonly IMesaService _mesaService;
@@ -17,6 +19,7 @@ public class MesasController : ControllerBase
     }
 
     [HttpGet]
+    [AllowAnonymous]
     [ProducesResponseType(typeof(IEnumerable<MesaDto>), StatusCodes.Status200OK)]
     public async Task<ActionResult<IEnumerable<MesaDto>>> GetMesas(
         [FromQuery] int? capacidadMinima,
@@ -27,6 +30,7 @@ public class MesasController : ControllerBase
     }
 
     [HttpGet("{id:int}")]
+    [AllowAnonymous]
     [ProducesResponseType(typeof(MesaDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<MesaDto>> GetMesa(int id)
@@ -39,7 +43,9 @@ public class MesasController : ControllerBase
     }
 
     [HttpGet("{id:int}/reservas")]
+    [Authorize]
     [ProducesResponseType(typeof(IEnumerable<ReservaDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<IEnumerable<ReservaDto>>> GetReservasPorMesa(int id)
     {
@@ -51,8 +57,11 @@ public class MesasController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize(Roles = "Gerente")]
     [ProducesResponseType(typeof(MesaDto), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status409Conflict)]
     public async Task<ActionResult<MesaDto>> CrearMesa([FromBody] MesaCrearDto dto)
     {
@@ -68,8 +77,11 @@ public class MesasController : ControllerBase
     }
 
     [HttpPut("{id:int}")]
+    [Authorize(Roles = "Gerente")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status409Conflict)]
     public async Task<IActionResult> ActualizarMesa(int id, [FromBody] MesaActualizarDto dto)
@@ -89,7 +101,10 @@ public class MesasController : ControllerBase
     }
 
     [HttpDelete("{id:int}")]
+    [Authorize(Roles = "Gerente")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status409Conflict)]
     public async Task<IActionResult> EliminarMesa(int id)

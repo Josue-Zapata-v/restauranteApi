@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Restaurante.Entidades.DTOs;
 using Restaurante.Negocio.Exceptions;
@@ -7,6 +8,7 @@ namespace Restaurante.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Authorize]
 public class ReservasController : ControllerBase
 {
     private readonly IReservaService _reservaService;

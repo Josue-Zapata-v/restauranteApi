@@ -16,6 +16,8 @@ public partial class RestauranteContext : DbContext
 
     public virtual DbSet<Reserva> Reservas { get; set; }
 
+    public virtual DbSet<Usuario> Usuarios { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Mesa>(entity =>
@@ -40,6 +42,15 @@ public partial class RestauranteContext : DbContext
                 .HasForeignKey(d => d.MesaId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Reservas_Mesas");
+        });
+
+        modelBuilder.Entity<Usuario>(entity =>
+        {
+            entity.HasIndex(e => e.Correo, "UQ_Usuarios_Correo").IsUnique();
+
+            entity.Property(e => e.Correo).HasMaxLength(150);
+            entity.Property(e => e.ClaveHash).HasMaxLength(255);
+            entity.Property(e => e.Rol).HasMaxLength(50);
         });
 
         OnModelCreatingPartial(modelBuilder);
